@@ -96,7 +96,7 @@ function OpenGitHubRepo() {
           <a
             href="https://github.com/langchain-ai/agent-chat-ui"
             target="_blank"
-            className="flex items-center justify-center"
+            className="flex items-center justify-center hidden"
           >
             <GitHubSVG
               width="24"
@@ -481,7 +481,7 @@ export function Thread() {
                       />
 
                       <div className="flex items-center gap-6 p-2 pt-4">
-                        <div>
+                        <div className="hidden">
                           <div className="flex items-center space-x-2">
                             <Switch
                               id="render-tool-calls"
@@ -498,7 +498,7 @@ export function Thread() {
                         </div>
                         <Label
                           htmlFor="file-input"
-                          className="flex cursor-pointer items-center gap-2"
+                          className="flex cursor-pointer items-center gap-2 hidden"
                         >
                           <Plus className="size-5 text-gray-600" />
                           <span className="text-sm text-gray-600">
