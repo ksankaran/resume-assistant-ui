@@ -5,11 +5,11 @@ RUN npm install -g pnpm
 
 WORKDIR /app
 
+COPY . /app/
+
 RUN pnpm install
 
 RUN pnpm build
-
-COPY . /app/
 
 EXPOSE 3000
 
