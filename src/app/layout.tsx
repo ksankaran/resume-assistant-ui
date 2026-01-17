@@ -22,7 +22,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Velu Sankaran | AI Resume Assistant",
   description:
-    "Chat with an AI assistant to learn about Velu Sankaran - Full Stack Architect with 18+ years of experience building scalable systems.",
+    "Chat with an AI assistant to learn about Velu Sankaran - Full Stack Architect with 19+ years of experience building scalable systems.",
   keywords: [
     "Velu Sankaran",
     "Full Stack Architect",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Velu Sankaran | AI Resume Assistant",
     description:
-      "Chat with an AI to learn about my 18+ years of experience in software architecture.",
+      "Chat with an AI to learn about my 19+ years of experience in software architecture.",
     type: "website",
   },
 };
