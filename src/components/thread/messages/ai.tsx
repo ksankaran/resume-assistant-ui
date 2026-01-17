@@ -14,6 +14,8 @@ import { ThreadView } from "../agent-inbox";
 import { useQueryState, parseAsBoolean } from "nuqs";
 import { GenericInterruptView } from "./generic-interrupt";
 import { useArtifact } from "../artifact";
+import { ChatAvatar } from "@/components/Avatar";
+import { TypingIndicator } from "@/components/TypingIndicator";
 
 function CustomComponent({
   message,
@@ -141,8 +143,11 @@ export function AssistantMessage({
   }
 
   return (
-    <div className="group mr-auto flex items-start gap-2">
-      <div className="flex flex-col gap-2">
+    <div className="group mr-auto flex items-start gap-3 animate-fade-in-up">
+      {/* Avatar */}
+      {!isToolResult && <ChatAvatar className="mt-1" />}
+
+      <div className="flex flex-col gap-2 min-w-0 flex-1">
         {isToolResult ? (
           <>
             <ToolResult message={message} />
@@ -212,13 +217,5 @@ export function AssistantMessage({
 }
 
 export function AssistantMessageLoading() {
-  return (
-    <div className="mr-auto flex items-start gap-2">
-      <div className="bg-muted flex h-8 items-center gap-1 rounded-2xl px-4 py-2">
-        <div className="bg-foreground/50 h-1.5 w-1.5 animate-[pulse_1.5s_ease-in-out_infinite] rounded-full"></div>
-        <div className="bg-foreground/50 h-1.5 w-1.5 animate-[pulse_1.5s_ease-in-out_0.5s_infinite] rounded-full"></div>
-        <div className="bg-foreground/50 h-1.5 w-1.5 animate-[pulse_1.5s_ease-in-out_1s_infinite] rounded-full"></div>
-      </div>
-    </div>
-  );
+  return <TypingIndicator />;
 }

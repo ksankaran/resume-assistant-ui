@@ -12,7 +12,6 @@ import {
   DO_NOT_RENDER_ID_PREFIX,
   ensureToolCallsHaveResponses,
 } from "@/lib/ensure-tool-responses";
-import { LangGraphLogoSVG } from "../icons/langgraph";
 import { TooltipIconButton } from "./tooltip-icon-button";
 import {
   ArrowDown,
@@ -22,7 +21,6 @@ import {
   SquarePen,
   XIcon,
   Plus,
-  CircleX,
 } from "lucide-react";
 import { useQueryState, parseAsBoolean } from "nuqs";
 import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
@@ -31,13 +29,6 @@ import { toast } from "sonner";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Label } from "../ui/label";
 import { Switch } from "../ui/switch";
-import { GitHubSVG } from "../icons/github";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
 import { useFileUpload } from "@/hooks/use-file-upload";
 import { ContentBlocksPreview } from "./ContentBlocksPreview";
 import {
@@ -46,6 +37,10 @@ import {
   ArtifactTitle,
   useArtifactContext,
 } from "./artifact";
+import { Welcome } from "@/components/Welcome";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { Avatar } from "@/components/Avatar";
+import { QuickSuggestions } from "@/components/SuggestedQuestions";
 
 function StickyToBottomContent(props: {
   content: ReactNode;
@@ -88,29 +83,7 @@ function ScrollToBottom(props: { className?: string }) {
   );
 }
 
-function OpenGitHubRepo() {
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <a
-            href="https://github.com/langchain-ai/agent-chat-ui"
-            target="_blank"
-            className="flex items-center justify-center hidden"
-          >
-            <GitHubSVG
-              width="24"
-              height="24"
-            />
-          </a>
-        </TooltipTrigger>
-        <TooltipContent side="left">
-          <p>Open GitHub repo</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
-}
+// Removed GitHub link - this is a personal portfolio
 
 export function Thread() {
   const [artifactContext, setArtifactContext] = useArtifactContext();
@@ -256,7 +229,7 @@ export function Thread() {
     <div className="flex h-screen w-full overflow-hidden">
       <div className="relative hidden lg:flex">
         <motion.div
-          className="absolute z-20 h-full overflow-hidden border-r bg-white"
+          className="absolute z-20 h-full overflow-hidden border-r bg-background"
           style={{ width: 300 }}
           animate={
             isLargeScreen
@@ -310,7 +283,7 @@ export function Thread() {
               <div>
                 {(!chatHistoryOpen || !isLargeScreen) && (
                   <Button
-                    className="hover:bg-gray-100"
+                    className="hover:bg-muted"
                     variant="ghost"
                     onClick={() => setChatHistoryOpen((p) => !p)}
                   >
@@ -323,17 +296,17 @@ export function Thread() {
                 )}
               </div>
               <div className="absolute top-2 right-4 flex items-center">
-                <OpenGitHubRepo />
+                <ThemeToggle />
               </div>
             </div>
           )}
           {chatStarted && (
-            <div className="relative z-10 flex items-center justify-between gap-3 p-2">
+            <div className="relative z-10 flex items-center justify-between gap-3 p-2 border-b border-border">
               <div className="relative flex items-center justify-start gap-2">
                 <div className="absolute left-0 z-10">
                   {(!chatHistoryOpen || !isLargeScreen) && (
                     <Button
-                      className="hover:bg-gray-100"
+                      className="hover:bg-muted"
                       variant="ghost"
                       onClick={() => setChatHistoryOpen((p) => !p)}
                     >
@@ -346,7 +319,7 @@ export function Thread() {
                   )}
                 </div>
                 <motion.button
-                  className="flex cursor-pointer items-center gap-2"
+                  className="flex cursor-pointer items-center gap-3"
                   onClick={() => setThreadId(null)}
                   animate={{
                     marginLeft: !chatHistoryOpen ? 48 : 0,
@@ -357,20 +330,15 @@ export function Thread() {
                     damping: 30,
                   }}
                 >
-                  <LangGraphLogoSVG
-                    width={32}
-                    height={32}
-                  />
-                  <span className="text-xl font-semibold tracking-tight">
-                    Velu Sankaran AI Chat
+                  <Avatar size="sm" />
+                  <span className="text-lg font-semibold tracking-tight">
+                    Chat with <span className="text-[var(--accent)]">Velu</span>
                   </span>
                 </motion.button>
               </div>
 
-              <div className="flex items-center gap-4">
-                <div className="flex items-center">
-                  <OpenGitHubRepo />
-                </div>
+              <div className="flex items-center gap-2">
+                <ThemeToggle />
                 <TooltipIconButton
                   size="lg"
                   className="p-4"
@@ -390,7 +358,7 @@ export function Thread() {
             <StickyToBottomContent
               className={cn(
                 "absolute inset-0 overflow-y-scroll px-4 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-transparent",
-                !chatStarted && "mt-[25vh] flex flex-col items-stretch",
+                !chatStarted && "flex flex-col items-stretch justify-center",
                 chatStarted && "grid grid-rows-[1fr_auto]",
               )}
               contentClassName="pt-8 pb-16  max-w-3xl mx-auto flex flex-col gap-4 w-full"
@@ -430,113 +398,134 @@ export function Thread() {
                 </>
               }
               footer={
-                <div className="sticky bottom-0 flex flex-col items-center gap-8 bg-white">
+                <div className="sticky bottom-0 flex flex-col items-center gap-4 bg-background">
+                  {/* Welcome screen when chat hasn't started */}
                   {!chatStarted && (
-                    <div className="flex items-center gap-3">
-                      <LangGraphLogoSVG className="h-8 flex-shrink-0" />
-                      <h1 className="text-2xl font-semibold tracking-tight">
-                        Velu Sankaran AI Chat
-                      </h1>
-                    </div>
+                    <Welcome
+                      onSendMessage={(message) => {
+                        const newHumanMessage: Message = {
+                          id: uuidv4(),
+                          type: "human",
+                          content: message,
+                        };
+                        stream.submit(
+                          { messages: [newHumanMessage] },
+                          {
+                            streamMode: ["values"],
+                            optimisticValues: (prev) => ({
+                              ...prev,
+                              messages: [...(prev.messages ?? []), newHumanMessage],
+                            }),
+                          }
+                        );
+                      }}
+                      className="w-full"
+                    />
                   )}
 
-                  <ScrollToBottom className="animate-in fade-in-0 zoom-in-95 absolute bottom-full left-1/2 mb-4 -translate-x-1/2" />
+                  {/* Chat input when conversation has started */}
+                  {chatStarted && (
+                    <>
+                      <ScrollToBottom className="animate-in fade-in-0 zoom-in-95 absolute bottom-full left-1/2 mb-4 -translate-x-1/2" />
 
-                  <div
-                    ref={dropRef}
-                    className={cn(
-                      "bg-muted relative z-10 mx-auto mb-8 w-full max-w-3xl rounded-2xl shadow-xs transition-all",
-                      dragOver
-                        ? "border-primary border-2 border-dotted"
-                        : "border border-solid",
-                    )}
-                  >
-                    <form
-                      onSubmit={handleSubmit}
-                      className="mx-auto grid max-w-3xl grid-rows-[1fr_auto] gap-2"
-                    >
-                      <ContentBlocksPreview
-                        blocks={contentBlocks}
-                        onRemove={removeBlock}
-                      />
-                      <textarea
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onPaste={handlePaste}
-                        onKeyDown={(e) => {
-                          if (
-                            e.key === "Enter" &&
-                            !e.shiftKey &&
-                            !e.metaKey &&
-                            !e.nativeEvent.isComposing
-                          ) {
-                            e.preventDefault();
-                            const el = e.target as HTMLElement | undefined;
-                            const form = el?.closest("form");
-                            form?.requestSubmit();
-                          }
-                        }}
-                        placeholder="Type your message..."
-                        className="field-sizing-content resize-none border-none bg-transparent p-3.5 pb-0 shadow-none ring-0 outline-none focus:ring-0 focus:outline-none"
-                      />
-
-                      <div className="flex items-center gap-6 p-2 pt-4">
-                        <div className="hidden">
-                          <div className="flex items-center space-x-2">
-                            <Switch
-                              id="render-tool-calls"
-                              checked={hideToolCalls ?? false}
-                              onCheckedChange={setHideToolCalls}
-                            />
-                            <Label
-                              htmlFor="render-tool-calls"
-                              className="text-sm text-gray-600"
-                            >
-                              Hide Tool Calls
-                            </Label>
-                          </div>
-                        </div>
-                        <Label
-                          htmlFor="file-input"
-                          className="flex cursor-pointer items-center gap-2 hidden"
-                        >
-                          <Plus className="size-5 text-gray-600" />
-                          <span className="text-sm text-gray-600">
-                            Upload PDF or Image
-                          </span>
-                        </Label>
-                        <input
-                          id="file-input"
-                          type="file"
-                          onChange={handleFileUpload}
-                          multiple
-                          accept="image/jpeg,image/png,image/gif,image/webp,application/pdf"
-                          className="hidden"
-                        />
-                        {stream.isLoading ? (
-                          <Button
-                            key="stop"
-                            onClick={() => stream.stop()}
-                            className="ml-auto"
-                          >
-                            <LoaderCircle className="h-4 w-4 animate-spin" />
-                            Cancel
-                          </Button>
-                        ) : (
-                          <Button
-                            type="submit"
-                            className="ml-auto shadow-md transition-all"
-                            disabled={
-                              isLoading ||
-                              (!input.trim() && contentBlocks.length === 0)
-                            }
-                          >
-                            Send
-                          </Button>
+                      <div
+                        ref={dropRef}
+                        className={cn(
+                          "bg-muted relative z-10 mx-auto mb-4 w-full max-w-3xl rounded-2xl shadow-sm transition-all",
+                          dragOver
+                            ? "border-[var(--accent)] border-2 border-dotted"
+                            : "border border-solid",
                         )}
+                      >
+                        <form
+                          onSubmit={handleSubmit}
+                          className="mx-auto grid max-w-3xl grid-rows-[1fr_auto] gap-2"
+                        >
+                          <ContentBlocksPreview
+                            blocks={contentBlocks}
+                            onRemove={removeBlock}
+                          />
+                          <textarea
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            onPaste={handlePaste}
+                            onKeyDown={(e) => {
+                              if (
+                                e.key === "Enter" &&
+                                !e.shiftKey &&
+                                !e.metaKey &&
+                                !e.nativeEvent.isComposing
+                              ) {
+                                e.preventDefault();
+                                const el = e.target as HTMLElement | undefined;
+                                const form = el?.closest("form");
+                                form?.requestSubmit();
+                              }
+                            }}
+                            placeholder="Ask me anything about my experience..."
+                            className="field-sizing-content resize-none border-none bg-transparent p-3.5 pb-0 shadow-none ring-0 outline-none focus:ring-0 focus:outline-none"
+                          />
+
+                          <div className="flex items-center gap-6 p-2 pt-4">
+                            <div className="hidden">
+                              <div className="flex items-center space-x-2">
+                                <Switch
+                                  id="render-tool-calls"
+                                  checked={hideToolCalls ?? false}
+                                  onCheckedChange={setHideToolCalls}
+                                />
+                                <Label
+                                  htmlFor="render-tool-calls"
+                                  className="text-sm text-muted-foreground"
+                                >
+                                  Hide Tool Calls
+                                </Label>
+                              </div>
+                            </div>
+                            <input
+                              id="file-input"
+                              type="file"
+                              onChange={handleFileUpload}
+                              multiple
+                              accept="image/jpeg,image/png,image/gif,image/webp,application/pdf"
+                              className="hidden"
+                            />
+                            {stream.isLoading ? (
+                              <Button
+                                key="stop"
+                                onClick={() => stream.stop()}
+                                className="ml-auto"
+                              >
+                                <LoaderCircle className="h-4 w-4 animate-spin" />
+                                Cancel
+                              </Button>
+                            ) : (
+                              <Button
+                                type="submit"
+                                className="ml-auto shadow-md transition-all btn-accent-glow bg-[var(--accent)] hover:bg-[var(--accent)]/90"
+                                disabled={
+                                  isLoading ||
+                                  (!input.trim() && contentBlocks.length === 0)
+                                }
+                              >
+                                Send
+                              </Button>
+                            )}
+                          </div>
+                        </form>
                       </div>
-                    </form>
-                  </div>
+
+                      {/* Quick suggestions when there are few messages */}
+                      {messages.length <= 2 && (
+                        <QuickSuggestions
+                          onSelect={(question) => {
+                            setInput(question);
+                          }}
+                          className="mb-4 px-4"
+                        />
+                      )}
+                    </>
+                  )}
                 </div>
               }
             />

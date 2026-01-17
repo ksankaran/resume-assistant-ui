@@ -74,7 +74,7 @@ export function HumanMessage({
   return (
     <div
       className={cn(
-        "group ml-auto flex items-center gap-2",
+        "group ml-auto flex items-center gap-2 animate-fade-in-up",
         isEditing && "w-full max-w-xl",
       )}
     >
